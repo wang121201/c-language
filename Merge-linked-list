@@ -1,0 +1,79 @@
+#include<stdio.h>
+#include <malloc.h>
+typedef struct list{
+	int thenum;
+	struct list* next;
+}List;
+void PrintList(list* listhead) {
+	list* head = listhead;
+	printf("%d", head->thenum);
+	head = head->next;
+	while (head) {
+		printf(" %d", head->thenum);
+		head = head->next;
+	}
+}
+list * AddList(list* la, list* lb) {
+	list* listhead=(List*)malloc(sizeof(List));
+	list* pa = la->next;
+	list* pb = lb->next;
+	list *head = la->thenum < lb->thenum ? la : lb;
+	listhead = head;
+	while (pa && pb) {
+		if (pa->thenum <= pb->thenum) {
+			listhead->next = pa;
+			listhead = pa;
+			pa = pa->next;
+		}
+		else {
+			listhead->next = pb;
+			listhead = pb;
+			pb = pb->next;
+		}
+	}
+	listhead->next = pa ? pa : pb;
+	return head->next;
+}
+
+void DeleteSame(list* head) {
+	list* curlist = head;
+	while (curlist->next) {
+		if (curlist->thenum == curlist->next->thenum) {
+			if (curlist->next->next) {
+				curlist->next = curlist->next->next;
+			}
+			else 
+				curlist->next = nullptr; 
+			curlist = curlist;
+		}
+		else
+			curlist = curlist->next;
+	}
+}
+
+int main() {
+	int n = 0;
+	list* headla = (List*)malloc(sizeof(List));
+	list* curra = headla;
+	list* headlb = (List*)malloc(sizeof(List));
+	list* currb = headlb;
+	while (n <2){
+		int num;
+		scanf_s("%d", &num);
+		list* curl= (List*)malloc(sizeof(List));
+		curl->thenum = num;
+		if (n == 0) {
+			curra->next = curl; curra = curra->next;
+		}
+		else if(n==1){
+			currb->next = curl; currb = currb->next;
+		}
+		char ch = getchar();
+		if (ch == EOF||ch=='\n') n++;
+	}
+	curra->next = nullptr;
+	currb->next = nullptr;
+	list* headadd=AddList(headla, headlb);
+	DeleteSame(headadd);
+	PrintList(headadd);
+}      
